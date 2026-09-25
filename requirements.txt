@@ -1,3 +1,4 @@
 selenium
 mysql-connector-python
 python-dotenv
+beautifulsoup4

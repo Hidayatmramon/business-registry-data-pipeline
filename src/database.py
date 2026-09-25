@@ -12,6 +12,7 @@ def get_connection():
         user=os.getenv("DB_USER"),
         password=os.getenv("DB_PASSWORD")
     )
+    return connection
 
 def create_table():
     connection = get_connection()
@@ -57,11 +58,11 @@ def insert_company(company):
 
     values = (
         company['url'],
-        company('company_name'),
-        company('legal_entity_type'),
-        company('business_number'),
-        company('sk_number'),
-        company('country')
+        company['company_name'],
+        company['legal_entity_type'],
+        company['business_number'],
+        company['sk_number'],
+        company['country']
     )
 
     cursor.execute(query, values)
