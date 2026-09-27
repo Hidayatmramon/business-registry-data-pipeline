@@ -2,3 +2,4 @@ selenium
 mysql-connector-python
 python-dotenv
 beautifulsoup4
+pytest
