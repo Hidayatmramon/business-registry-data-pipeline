@@ -1,4 +1,6 @@
 from bs4 import BeautifulSoup
+from exceptions import CompanyDataNotFoundError
+
 
 FIELD_MAPPING = {
     "Company Name": "company_name",
@@ -8,11 +10,22 @@ FIELD_MAPPING = {
     "Country": "country",
 }
 
+
 def parse_company_page(html, url):
-    soup = BeautifulSoup(html, "html.parser")
-    table = soup.select_one("table.cp-table")
+
+    soup = BeautifulSoup(
+        html,
+        "html.parser"
+    )
+
+    table = soup.select_one(
+        "table.cp-table"
+    )
+
     if not table:
-        raise ValueError("Company data table was not found")
+        raise CompanyDataNotFoundError(
+            "Company data table was not found."
+        )
 
     company = {
         "url": url,
@@ -25,15 +38,42 @@ def parse_company_page(html, url):
 
     rows = table.select("tr")
     for row in rows:
-        cells = row.find_all(["th", "td"])
+        cells = row.find_all(
+            ["th", "td"]
+        )
+
         if len(cells) != 2:
             continue
 
-        field_name = cells[0].get_text(strip=True)
-        field_value = cells[1].get_text(" ", strip=True)
+        field_name = cells[0].get_text(
+            strip=True
+        )
 
-        mapped_field = FIELD_MAPPING.get(field_name)
+        field_value = cells[1].get_text(
+            " ",
+            strip=True
+        )
+
+        mapped_field = FIELD_MAPPING.get(
+            field_name
+        )
+
         if mapped_field:
-            company[mapped_field] = field_value or None
-            
+            company[mapped_field] = (
+                field_value
+                if field_value
+                else None
+            )
+
+    validate_company(company)
     return company
+
+
+def validate_company(company):
+    if not company.get("url"):
+        raise CompanyDataNotFoundError("Company URL is missing.")
+
+    if not company.get("company_name"):
+        raise CompanyDataNotFoundError("Company name is missing.")
+
+    return True
