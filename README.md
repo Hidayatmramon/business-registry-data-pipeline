@@ -7,10 +7,6 @@ I built this to pull structured company data out of Indonesia's business registr
 **Search interface & results:**
 ![Search demo](./docs/demo-search.png)
 
-**Console output:**
-
-![Search demo](./docs/console-output.gif)
-
 **Scraped data (MySQL):**
 ![Database table](./docs/demo-mysql.png)
 
