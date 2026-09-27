@@ -9,7 +9,7 @@ I built this to pull structured company data out of Indonesia's business registr
 
 **Console output:**
 
-<video src="./docs/console-output.mp4" controls></video>
+![Search demo](./docs/console-output.gif)
 
 **Scraped data (MySQL):**
 ![Database table](./docs/demo-mysql.png)
