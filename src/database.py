@@ -1,22 +1,22 @@
 import mysql.connector
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
+from config import DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD
 
 def get_connection():
-    connection = mysql.connector.connect(
-        host=os.getenv("DB_HOST"),
-        port=int(os.getenv("DB_PORT", 3306)),
-        database=os.getenv("DB_NAME"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD")
+
+    return mysql.connector.connect(
+        host=DB_HOST,
+        port=DB_PORT,
+        database=DB_NAME,
+        user=DB_USER,
+        password=DB_PASSWORD,
     )
-    return connection
+
 
 def create_table():
+
     connection = get_connection()
     cursor = connection.cursor()
+
     query = """
     CREATE TABLE IF NOT EXISTS companies (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -26,15 +26,22 @@ def create_table():
         business_number VARCHAR(100),
         sk_number VARCHAR(255),
         country VARCHAR(100),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP
+            DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP
+            DEFAULT CURRENT_TIMESTAMP
+            ON UPDATE CURRENT_TIMESTAMP
     )
     """
+
     cursor.execute(query)
     connection.commit()
     cursor.close()
     connection.close()
 
+
 def insert_company(company):
+
     connection = get_connection()
     cursor = connection.cursor()
 
@@ -47,25 +54,38 @@ def insert_company(company):
         sk_number,
         country
     )
-    values (%s, %s, %s, %s, %s, %s)
+    VALUES (
+        %s, %s, %s, %s, %s, %s
+    )
+
     ON DUPLICATE KEY UPDATE
-        company_name = VALUES(company_name),
-        legal_entity_type = VALUES(legal_entity_type),
-        business_number = VALUES(business_number),
-        sk_number = VALUES(sk_number),
-        country = VALUES(country)
+
+        company_name =
+            VALUES(company_name),
+        legal_entity_type =
+            VALUES(legal_entity_type),
+        business_number =
+            VALUES(business_number),
+        sk_number =
+            VALUES(sk_number),
+        country =
+            VALUES(country)
     """
 
     values = (
-        company['url'],
-        company['company_name'],
-        company['legal_entity_type'],
-        company['business_number'],
-        company['sk_number'],
-        company['country']
+        company["url"],
+        company["company_name"],
+        company["legal_entity_type"],
+        company["business_number"],
+        company["sk_number"],
+        company["country"],
     )
 
-    cursor.execute(query, values)
+    cursor.execute(
+        query,
+        values
+    )
+
     connection.commit()
     cursor.close()
     connection.close()
